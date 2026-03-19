@@ -1,3 +1,4 @@
+import React from "react"
 import "./styles/global.css"
 import { useState } from "react"
 import Sidebar from "./components/Sidebar"
@@ -16,11 +17,11 @@ export default function App() {
   const [activePage, setActivePage] = useState("contacts")
   const building = BUILDINGS[0]
   return (
-    React.createElement("div", { className: "app-shell" },
-      React.createElement(Sidebar, { activePage, setActivePage, building }),
-      activePage === "contacts"
-        ? React.createElement(ContactsPage, { building })
-        : React.createElement(ComingSoon, { title: PAGE_LABELS[activePage] ?? activePage })
-    )
+    <div className="app-shell">
+      <Sidebar activePage={activePage} setActivePage={setActivePage} building={building} />
+      {activePage === "contacts"
+        ? <ContactsPage building={building} />
+        : <ComingSoon title={PAGE_LABELS[activePage] ?? activePage} />}
+    </div>
   )
 }
