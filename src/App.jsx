@@ -20,30 +20,25 @@ const PAGE_LABELS = {
 }
 
 export default function App() {
-  const [activePage, setActivePage]             = useState('contacts')
-  const [workOrderPrefill, setWorkOrderPrefill] = useState(null)
+  const [activePage, setActivePage] = useState('contacts')
+  const [pendingWO,  setPendingWO]  = useState(null)
   const building = BUILDINGS[0]
 
-  function handleCreateJobFromMessage(prefill) {
-    setWorkOrderPrefill(prefill)
+  function handleCreateJobFromMessages(data) {
+    setPendingWO(data)
     setActivePage('workorders')
-  }
-
-  function handlePageChange(page) {
-    if (page !== 'workorders') setWorkOrderPrefill(null)
-    setActivePage(page)
   }
 
   return (
     <div className="app-shell">
-      <Sidebar
-        activePage={activePage}
-        setActivePage={handlePageChange}
-        building={building}
-      />
+      <Sidebar activePage={activePage} setActivePage={setActivePage} building={building} />
       {activePage === 'contacts'   && <ContactsPage  building={building} />}
-      {activePage === 'workorders' && <WorkOrdersPage prefill={workOrderPrefill} />}
-      {activePage === 'messages'   && <MessagesPage   onCreateJob={handleCreateJobFromMessage} />}
+      {activePage === 'workorders' && (
+        <WorkOrdersPage pendingWO={pendingWO} onClearPending={() => setPendingWO(null)} />
+      )}
+      {activePage === 'messages'   && (
+        <MessagesPage onCreateJob={handleCreateJobFromMessages} />
+      )}
       {!['contacts','workorders','messages'].includes(activePage) &&
         <ComingSoon title={PAGE_LABELS[activePage] ?? activePage} />
       }
