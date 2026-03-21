@@ -27,20 +27,42 @@ export default function ContactsPage({ building }) {
 
   return (
     <div className="main-content">
+      {/* Page header */}
       <div className="page-header">
         <Users size={18} style={{ color: 'var(--text-muted)' }} />
         <span className="page-title">Contacts</span>
       </div>
+
+      {/* Tabs */}
       <div className="tabs">
         {TABS.map(t => (
-          <button key={t.id} className={`tab-btn${tab === t.id ? ' active' : ''}`} onClick={() => setTab(t.id)}>
+          <button
+            key={t.id}
+            className={`tab-btn${tab === t.id ? ' active' : ''}`}
+            onClick={() => setTab(t.id)}
+          >
             {t.label}
-            <span style={{ marginLeft: 6, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', minWidth: 18, height: 18, borderRadius: 9, fontSize: 11, fontWeight: 600, padding: '0 5px', background: tab === t.id ? 'var(--blue-light)' : 'var(--surface-2)', color: tab === t.id ? 'var(--blue)' : 'var(--text-muted)' }}>
+            <span style={{
+              marginLeft: 6,
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              minWidth: 18,
+              height: 18,
+              borderRadius: 9,
+              fontSize: 11,
+              fontWeight: 600,
+              padding: '0 5px',
+              background: tab === t.id ? 'var(--blue-light)' : 'var(--surface-2)',
+              color: tab === t.id ? 'var(--blue)' : 'var(--text-muted)',
+            }}>
               {counts[t.id]}
             </span>
           </button>
         ))}
       </div>
+
+      {/* Tab content */}
       {tab === 'apartments' && <ApartmentsTab buildingId={building.id} />}
       {tab === 'tenants'    && <TenantsTab    buildingId={building.id} />}
       {tab === 'owners'     && <OwnersTab     buildingId={building.id} />}
