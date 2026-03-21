@@ -20,19 +20,30 @@ const PAGE_LABELS = {
 }
 
 export default function App() {
-  const [activePage, setActivePage] = useState('contacts')
+  const [activePage, setActivePage]             = useState('contacts')
+  const [workOrderPrefill, setWorkOrderPrefill] = useState(null)
   const building = BUILDINGS[0]
+
+  function handleCreateJobFromMessage(prefill) {
+    setWorkOrderPrefill(prefill)
+    setActivePage('workorders')
+  }
+
+  function handlePageChange(page) {
+    if (page !== 'workorders') setWorkOrderPrefill(null)
+    setActivePage(page)
+  }
 
   return (
     <div className="app-shell">
       <Sidebar
         activePage={activePage}
-        setActivePage={setActivePage}
+        setActivePage={handlePageChange}
         building={building}
       />
       {activePage === 'contacts'   && <ContactsPage  building={building} />}
-      {activePage === 'workorders' && <WorkOrdersPage />}
-      {activePage === 'messages'   && <MessagesPage />}
+      {activePage === 'workorders' && <WorkOrdersPage prefill={workOrderPrefill} />}
+      {activePage === 'messages'   && <MessagesPage   onCreateJob={handleCreateJobFromMessage} />}
       {!['contacts','workorders','messages'].includes(activePage) &&
         <ComingSoon title={PAGE_LABELS[activePage] ?? activePage} />
       }
