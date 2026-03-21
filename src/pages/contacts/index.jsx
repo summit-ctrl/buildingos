@@ -4,7 +4,9 @@ import ApartmentsTab from './ApartmentsTab'
 import TenantsTab    from './TenantsTab'
 import OwnersTab     from './OwnersTab'
 import AgentsTab     from './AgentsTab'
-import { APARTMENTS, TENANTS, OWNERS, AGENTS } from '../../data/seed'
+import {
+  APARTMENTS, TENANTS, OWNERS, AGENTS,
+} from '../../data/seed'
 
 const TABS = [
   { id: 'apartments', label: 'Apartments' },
@@ -16,27 +18,12 @@ const TABS = [
 export default function ContactsPage({ building }) {
   const [tab, setTab] = useState('apartments')
 
-  const [apartments, setApartments] = useState(APARTMENTS.filter(a => a.buildingId === building.id))
-  const [tenants,    setTenants]    = useState(TENANTS.filter(t => t.buildingId === building.id))
-  const [owners,     setOwners]     = useState(OWNERS.filter(o => o.buildingId === building.id))
-  const [agents,     setAgents]     = useState(AGENTS.filter(a => a.buildingId === building.id))
-  const [notes,      setNotes]      = useState({})
-
-  const updateApartment = (id, changes) => setApartments(p => p.map(a => a.id === id ? { ...a, ...changes } : a))
-  const updateTenant    = (id, changes) => setTenants(p => p.map(t => t.id === id ? { ...t, ...changes } : t))
-  const updateOwner     = (id, changes) => setOwners(p => p.map(o => o.id === id ? { ...o, ...changes } : o))
-  const updateAgent     = (id, changes) => setAgents(p => p.map(a => a.id === id ? { ...a, ...changes } : a))
-
-  const addNote = (aptId, text) => setNotes(p => ({
-    ...p,
-    [aptId]: [...(p[aptId] || []), { id: Date.now(), text, createdAt: new Date().toLocaleString('en-AU') }]
-  }))
-  const deleteNote = (aptId, noteId) => setNotes(p => ({
-    ...p,
-    [aptId]: (p[aptId] || []).filter(n => n.id !== noteId)
-  }))
-
-  const counts = { apartments: apartments.length, tenants: tenants.length, owners: owners.length, agents: agents.length }
+  const counts = {
+    apartments: APARTMENTS.filter(a => a.buildingId === building.id).length,
+    tenants:    TENANTS.filter(t => t.buildingId === building.id).length,
+    owners:     OWNERS.filter(o => o.buildingId === building.id).length,
+    agents:     AGENTS.filter(a => a.buildingId === building.id).length,
+  }
 
   return (
     <div className="main-content">
@@ -54,10 +41,10 @@ export default function ContactsPage({ building }) {
           </button>
         ))}
       </div>
-      {tab === 'apartments' && <ApartmentsTab apartments={apartments} tenants={tenants} owners={owners} agents={agents} notes={notes} onUpdateApartment={updateApartment} onAddNote={addNote} onDeleteNote={deleteNote} />}
-      {tab === 'tenants'    && <TenantsTab    tenants={tenants} apartments={apartments} onUpdateTenant={updateTenant} />}
-      {tab === 'owners'     && <OwnersTab     owners={owners}   apartments={apartments} agents={agents} onUpdateOwner={updateOwner} />}
-      {tab === 'agents'     && <AgentsTab     agents={agents}   apartments={apartments} onUpdateAgent={updateAgent} />}
+      {tab === 'apartments' && <ApartmentsTab buildingId={building.id} />}
+      {tab === 'tenants'    && <TenantsTab    buildingId={building.id} />}
+      {tab === 'owners'     && <OwnersTab     buildingId={building.id} />}
+      {tab === 'agents'     && <AgentsTab     buildingId={building.id} />}
     </div>
   )
 }
