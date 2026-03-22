@@ -160,7 +160,7 @@ function DiaryTimeline({ entries, onAdd, tenantName }) {
     inbound:  { bg:'#dcfce7', color:'#15803d', label:'Inbound' },
     outbound: { bg:'#e8f0fd', color:'#1d5fc4', label:'Outbound' },
     internal: { bg:'#f3f4f6', color:'#6b7280', label:'Internal' },
-  }[d] || { bg:'#f3f4f6', color:'#6b7280', label:d }
+  }[d] || { bg:'#f3f4f6', color:'#6b7280', label:d })
 
   return (
     <div style={{ display:'flex', flexDirection:'column', height:'100%' }}>
