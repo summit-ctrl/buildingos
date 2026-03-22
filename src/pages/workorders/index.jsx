@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 const BLUE = '#1d5fc4'
 
@@ -511,20 +511,56 @@ function CaseDetail({order,onBack,onEdit}) {
 }
 
 // ─── Main export ──────────────────────────────────────────────────────────────
-export default function WorkOrdersPage() {
-  const [view,setView]=useState('list')
-  const [orders,setOrders]=useState(SEED)
-  const [active,setActive]=useState(null)
+export default function WorkOrdersPage({ prefill }) {
+  const [view,setView]   = useState('list')
+  const [orders,setOrders] = useState(SEED)
+  const [active,setActive] = useState(null)
+  const [createInitial,setCreateInitial] = useState(null)
+
+  useEffect(() => {
+    if (prefill) {
+      const now = new Date().toLocaleString('en-AU',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'})
+      setCreateInitial({
+        ...EMPTY(),
+        title:         prefill.title        || '',
+        description:   prefill.description  || '',
+        raisedByRole:  prefill.raisedByRole || 'Tenant',
+        raisedByName:  prefill.raisedByName || '',
+        raisedByPhone: prefill.raisedByPhone|| '',
+        raisedByEmail: prefill.raisedByEmail|| '',
+        unit:          prefill.unit         || '',
+        jobArea:       prefill.jobArea      || '',
+        createdAt:     now,
+      })
+      setView('create')
+    }
+  }, [prefill])
+
   function handleSave(order) {
     setOrders(p=>{const ex=p.find(o=>o.id===order.id);return ex?p.map(o=>o.id===order.id?order:o):[...p,order]})
     setActive(order); setView('detail')
   }
+
+  function handleCancelCreate() {
+    setCreateInitial(null)
+    setView('list')
+  }
+
   return (
     <div className="main-content" style={{padding:0,display:'flex',flexDirection:'column',height:'100%'}}>
-      {view==='create' ? <CreateCaseForm onSave={handleSave} onCancel={()=>setView('list')}/>
-      :view==='edit'   ? <CreateCaseForm initial={active} isEdit onSave={handleSave} onCancel={()=>setView('detail')}/>
-      :view==='detail'&&active ? <CaseDetail order={orders.find(o=>o.id===active.id)||active} onBack={()=>setView('list')} onEdit={()=>setView('edit')}/>
-      :<WorkOrdersList orders={orders} onNew={()=>setView('create')} onOpen={o=>{setActive(o);setView('detail')}}/>}
+      {view==='create' ? (
+        <CreateCaseForm
+          initial={createInitial}
+          onSave={handleSave}
+          onCancel={handleCancelCreate}
+        />
+      ) : view==='edit' ? (
+        <CreateCaseForm initial={active} isEdit onSave={handleSave} onCancel={()=>setView('detail')}/>
+      ) : view==='detail'&&active ? (
+        <CaseDetail order={orders.find(o=>o.id===active.id)||active} onBack={()=>setView('list')} onEdit={()=>setView('edit')}/>
+      ) : (
+        <WorkOrdersList orders={orders} onNew={()=>{setCreateInitial(null);setView('create')}} onOpen={o=>{setActive(o);setView('detail')}}/>
+      )}
     </div>
   )
 }
